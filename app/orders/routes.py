@@ -6,9 +6,12 @@ from . import bp
 from .services import process_purchase
 
 
-@bp.route("/checkout", methods=["POST"])
+@bp.route("/checkout", methods=["GET", "POST"])
 @login_required
 def checkout():
+    if request.method == "GET":
+        return render_template("orders/checkout.html")
+
     ticket_type_id = request.form.get("ticket_type_id", type=int)
     quantity = request.form.get("quantity", type=int)
 

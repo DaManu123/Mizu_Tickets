@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Mizu Tickets{% endblock %}
+
+{% block content %}
+<div class="page checkout-page">
+  <div class="container">
+    <h1 class="checkout-title">CHECKOUT</h1>
+
+    <div class="checkout-steps">
+      <div class="checkout-step done">1. Seleccion de boletos</div>
+      <div class="checkout-step active">2. Confirmacion</div>
+      <div class="checkout-step">3. Finalizado</div>
+    </div>
+
+    <div class="checkout-layout">
+      <div>
+        <div class="form-card">
+          <div class="form-section-title">Tu compra se confirma desde el detalle del evento</div>
+          <p class="event-description">
+            Para mantener el inventario sincronizado en tiempo real, selecciona el tipo de boleto y cantidad
+            directamente en la vista de detalle del evento. Desde ahi procesamos la compra con validacion
+            atomica de stock para evitar sobreventa.
+          </p>
+
+          <div class="divider"></div>
+
+          <div class="form-row">
+            <a class="btn btn-primary btn-lg" href="{{ url_for('main.catalog') }}">Explorar eventos</a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="order-summary">
+          <div class="order-summary-title">Resumen</div>
+          <div class="summary-line"><span>Estado</span><span>Listo para compra</span></div>
+          <div class="summary-line"><span>Proteccion de stock</span><span>Activa</span></div>
+          <div class="summary-line total"><span>Checkout</span><span class="val">SSR</span></div>
+          <a class="btn btn-ghost btn-full" href="{{ url_for('main.catalog') }}">Volver al catalogo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

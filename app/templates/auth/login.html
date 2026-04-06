@@ -3,12 +3,42 @@
 {% block title %}Iniciar sesion - Mizu Tickets{% endblock %}
 
 {% block content %}
-<h1>Iniciar sesion</h1>
-<form method="post">
-  {{ form.hidden_tag() }}
-  <label>{{ form.email.label }} {{ form.email() }}</label>
-  <label>{{ form.password.label }} {{ form.password() }}</label>
-  {{ form.submit() }}
-</form>
-<p><a href="{{ url_for('auth.register') }}">Crear cuenta</a></p>
+<div class="page auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">MIZUTICKETS</div>
+    <p class="auth-tagline">Tu destino para los mejores conciertos</p>
+
+    <div class="tab-row">
+      <a class="tab-btn active" href="{{ url_for('auth.login') }}">Iniciar sesion</a>
+      <a class="tab-btn" href="{{ url_for('auth.register') }}">Crear cuenta</a>
+    </div>
+
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group mb16">
+        <label class="form-label" for="email">Correo electronico</label>
+        {{ form.email(class_='form-input' + (' error' if form.email.errors else ''), id='email', placeholder='correo@ejemplo.com') }}
+        {% for error in form.email.errors %}
+        <span class="form-error">{{ error }}</span>
+        {% endfor %}
+      </div>
+
+      <div class="form-group mb16">
+        <label class="form-label" for="password">Contrasena</label>
+        {{ form.password(class_='form-input' + (' error' if form.password.errors else ''), id='password', placeholder='••••••••') }}
+        {% for error in form.password.errors %}
+        <span class="form-error">{{ error }}</span>
+        {% endfor %}
+      </div>
+
+      {{ form.submit(class_='btn btn-primary btn-full btn-lg', value='Iniciar sesion') }}
+    </form>
+
+    <p style="text-align:center;font-size:0.82rem;color:var(--text-muted);margin-top:16px">
+      No tienes cuenta?
+      <a style="color:var(--cyan)" href="{{ url_for('auth.register') }}">Registrate gratis</a>
+    </p>
+  </div>
+</div>
 {% endblock %}

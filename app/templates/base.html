@@ -1,28 +1,119 @@
-<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Mizu Tickets{% endblock %}</title>
-  <style>
-    body { font-family: Segoe UI, sans-serif; margin: 2rem; }
-    .flash { padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0.5rem; }
-    .flash.success { background: #eaf9ef; border: 1px solid #67c587; }
-    .flash.error { background: #fdeceb; border: 1px solid #d16a61; }
-    form { max-width: 420px; display: grid; gap: 0.75rem; }
-    input { padding: 0.5rem; }
-    button { padding: 0.5rem 0.75rem; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+  <canvas id="bg-canvas"></canvas>
 
-  {% block content %}{% endblock %}
+  <nav class="navbar" id="navbar">
+    <a class="nav-logo" href="{{ url_for('main.catalog') }}">MIZUTICKETS</a>
+    <ul class="nav-links">
+      <li><a class="nav-link" href="{{ url_for('main.catalog') }}">Inicio</a></li>
+      <li><a class="nav-link" href="{{ url_for('main.catalog') }}">Eventos</a></li>
+      {% if current_user.is_authenticated %}
+      <li><a class="nav-link" href="#">Mi Perfil</a></li>
+      {% endif %}
+    </ul>
+    <div class="nav-actions">
+      {% if current_user.is_authenticated %}
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <button class="nav-user-btn" type="submit">Cerrar sesion</button>
+      </form>
+      {% else %}
+      <a class="nav-user-btn" href="{{ url_for('auth.login') }}">Iniciar sesion</a>
+      {% endif %}
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="nav-drawer" id="nav-drawer">
+    <a class="nav-link" href="{{ url_for('main.catalog') }}">Inicio</a>
+    <a class="nav-link" href="{{ url_for('main.catalog') }}">Eventos</a>
+    {% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('auth.logout') }}">
+      <button class="nav-link" type="submit">Cerrar sesion</button>
+    </form>
+    {% else %}
+    <a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesion</a>
+    <a class="nav-link" href="{{ url_for('auth.register') }}">Crear cuenta</a>
+    {% endif %}
+  </div>
+
+  <div id="app">
+    {% block content %}{% endblock %}
+  </div>
+
+  <div id="toast-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% set mapped = 'error' if category in ['danger', 'error'] else 'success' if category == 'success' else 'info' %}
+          <div class="toast {{ mapped }}">
+            <span class="toast-icon">
+              {% if mapped == 'success' %}✅{% elif mapped == 'error' %}❌{% else %}💫{% endif %}
+            </span>
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-name">MIZUTICKETS</div>
+          <p class="footer-brand-desc">La plataforma lider de tickets para conciertos en Mexico. Experiencias unicas, precios transparentes, sin complicaciones.</p>
+        </div>
+        <div>
+          <div class="footer-heading">Eventos</div>
+          <ul class="footer-links">
+            <li><a href="{{ url_for('main.catalog') }}">Todos los conciertos</a></li>
+            <li><a href="{{ url_for('main.catalog') }}">Rock y Metal</a></li>
+            <li><a href="{{ url_for('main.catalog') }}">Pop y R&B</a></li>
+            <li><a href="{{ url_for('main.catalog') }}">Reggaeton</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-heading">Ayuda</div>
+          <ul class="footer-links">
+            <li><a href="#">Centro de ayuda</a></li>
+            <li><a href="#">Politica de reembolso</a></li>
+            <li><a href="#">Preguntas frecuentes</a></li>
+            <li><a href="#">Contactanos</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-heading">Legal</div>
+          <ul class="footer-links">
+            <li><a href="#">Terminos de servicio</a></li>
+            <li><a href="#">Privacidad</a></li>
+            <li><a href="#">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 MizuTickets. Todos los derechos reservados.</span>
+        <div class="footer-socials">
+          <div class="footer-social">X</div>
+          <div class="footer-social">f</div>
+          <div class="footer-social">▶</div>
+          <div class="footer-social">📸</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

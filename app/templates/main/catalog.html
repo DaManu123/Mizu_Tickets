@@ -1,19 +1,89 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}Catalogo - Mizu Tickets{% endblock %}
 
 {% block content %}
-<h1>Catalogo de Eventos</h1>
-{% if events %}
-  <ul>
-    {% for event in events %}
-      <li>
-        <strong>{{ event.title }}</strong> - {{ event.venue }} - {{ event.date.strftime('%Y-%m-%d %H:%M') }}
-        <a href="{{ url_for('main.event_detail', id=event.id) }}">Ver detalle</a>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No hay eventos disponibles por ahora.</p>
-{% endif %}
+<div class="page">
+  <section class="hero">
+    <div class="container">
+      <div class="hero-bg"></div>
+      <div class="hero-image"></div>
+      <div class="hero-content">
+        <div class="hero-tag">En vivo esta temporada</div>
+        <h1 class="hero-title">
+          <span class="line1">TU PROXIMO</span>
+          <span class="line2">CONCIERTO</span>
+        </h1>
+        <p class="hero-sub">Los mejores artistas del mundo en una sola plataforma. Compra tus tickets de forma segura, rapida y sin sorpresas.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('main.catalog') }}">Ver todos los eventos</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll-hint">
+      <span>Explorar</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <hr class="neon-line">
+
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Proximos eventos</div>
+        <h2 class="section-title">CONCIERTOS<br><span style="color:var(--cyan)">DESTACADOS</span></h2>
+        <p class="section-sub">Los shows mas esperados del ano, disponibles en Mizu Tickets.</p>
+      </div>
+
+      {% if events %}
+      <div class="concerts-grid large">
+        {% for event in events %}
+        {% set min_price = (event.ticket_types | map(attribute='price') | min) if event.ticket_types else None %}
+        {% set total_stock = (event.ticket_types | map(attribute='stock_available') | sum) if event.ticket_types else 0 %}
+        <article class="concert-card">
+          <div class="card-img-wrap">
+            <img src="{{ event.image_url or 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80' }}" alt="{{ event.title }}" loading="lazy">
+            <div class="card-img-overlay"></div>
+            <span class="card-genre-badge">Evento</span>
+            <span class="card-availability {{ 'soldout' if total_stock == 0 else 'available' }}">
+              {{ 'Agotado' if total_stock == 0 else 'Disponible' }}
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="card-artist">{{ event.title }}</div>
+            <div class="card-tour">{{ event.description or 'Experiencia en vivo' }}</div>
+            <div class="card-meta">
+              <div class="card-meta-item"><span class="meta-icon">📅</span>{{ event.date.strftime('%d %b %Y') }}</div>
+              <div class="card-meta-item"><span class="meta-icon">🕐</span>{{ event.date.strftime('%H:%M') }} hrs</div>
+              <div class="card-meta-item"><span class="meta-icon">📍</span>{{ event.venue }}</div>
+              <div class="card-meta-item"><span class="meta-icon">🎟️</span>{{ total_stock }} disponibles</div>
+            </div>
+            <div class="card-footer">
+              <div>
+                <div class="card-price-label">Desde</div>
+                <div class="card-price">
+                  {% if min_price is not none %}
+                  <span class="price-currency">$</span>{{ '%.2f'|format(min_price) }}
+                  {% else %}
+                  Por definir
+                  {% endif %}
+                </div>
+              </div>
+              <a class="btn btn-primary btn-sm" href="{{ url_for('main.event_detail', id=event.id) }}">Ver tickets →</a>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="no-results">
+        <div class="no-results-icon">🎵</div>
+        <div class="no-results-title">No hay eventos disponibles</div>
+        <p>Vuelve pronto para ver los siguientes conciertos.</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
 {% endblock %}
