@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Catalogo - Mizu Tickets{% endblock %}
+
+{% block content %}
+<h1>Catalogo de Eventos</h1>
+{% if events %}
+  <ul>
+    {% for event in events %}
+      <li>
+        <strong>{{ event.title }}</strong> - {{ event.venue }} - {{ event.date.strftime('%Y-%m-%d %H:%M') }}
+        <a href="{{ url_for('main.event_detail', id=event.id) }}">Ver detalle</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No hay eventos disponibles por ahora.</p>
+{% endif %}
+{% endblock %}

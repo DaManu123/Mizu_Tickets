@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.title }} - Mizu Tickets{% endblock %}
+
+{% block content %}
+<h1>{{ event.title }}</h1>
+<p>{{ event.description or 'Sin descripcion' }}</p>
+<p><strong>Lugar:</strong> {{ event.venue }}</p>
+<p><strong>Fecha:</strong> {{ event.date.strftime('%Y-%m-%d %H:%M') }}</p>
+
+<h2>Boletos disponibles</h2>
+{% if event.ticket_types %}
+  <form method="post" action="{{ url_for('orders.checkout') }}">
+    <input type="hidden" name="event_id" value="{{ event.id }}">
+    <label for="ticket_type_id">Tipo de boleto</label>
+    <select id="ticket_type_id" name="ticket_type_id" required>
+      <option value="">Selecciona una opcion</option>
+      {% for ticket in event.ticket_types %}
+        <option value="{{ ticket.id }}">
+          {{ ticket.name }} - ${{ '%.2f'|format(ticket.price) }} - Stock: {{ ticket.stock_available }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label for="quantity">Cantidad</label>
+    <input id="quantity" name="quantity" type="number" min="1" required>
+
+    {% if current_user.is_authenticated %}
+      <button type="submit">Confirmar compra</button>
+    {% else %}
+      <p>Debes <a href="{{ url_for('auth.login') }}">iniciar sesion</a> para comprar.</p>
+    {% endif %}
+  </form>
+{% else %}
+  <p>Este evento aun no tiene tipos de boletos configurados.</p>
+{% endif %}
+{% endblock %}

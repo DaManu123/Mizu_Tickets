@@ -18,9 +18,11 @@ def create_app(config_class=Config):
 
     from .auth import bp as auth_bp
     from .main import bp as main_bp
+    from .orders import bp as orders_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(orders_bp)
 
     # Import models so Flask-Migrate can detect them.
     from . import models  # noqa: F401

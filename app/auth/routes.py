@@ -18,7 +18,7 @@ def _normalize_text(value):
 @bp.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.catalog"))
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -45,7 +45,7 @@ def register():
 @bp.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.catalog"))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -60,7 +60,7 @@ def login():
         next_page = request.args.get("next")
 
         flash("Inicio de sesion exitoso.", "success")
-        return redirect(next_page or url_for("main.index"))
+        return redirect(next_page or url_for("main.catalog"))
 
     return render_template("auth/login.html", form=form)
 
