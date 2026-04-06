@@ -1,7 +1,7 @@
 /* =====================================================
-   NEONSTAGE — Complete Stylesheet
-   Aesthetic: Electric Underground / Neon Noir
-   ===================================================== */
+  NEONSTAGE — Hoja de estilos completa
+  Estetica: Underground electrico / Neon Noir
+  ===================================================== */
 
 /* ── Variables ── */
 :root {
@@ -38,7 +38,7 @@
   --trans: 0.3s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* ── Reset & Base ── */
+/* ── Reinicio y base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -73,7 +73,7 @@ input, textarea, select, button { font-family: var(--font-body); }
 button { cursor: pointer; }
 ul { list-style: none; }
 
-/* ── Loader ── */
+/* ── Cargador ── */
 .page-loader {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
@@ -109,7 +109,7 @@ ul { list-style: none; }
   50%      { filter: drop-shadow(0 0 30px rgba(255,45,120,0.6)); }
 }
 
-/* ── Navigation ── */
+/* ── Navegacion ── */
 nav.navbar {
   position: fixed; top: 0; left: 0; right: 0;
   height: var(--nav-h);
@@ -204,7 +204,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 }
 .nav-avatar:hover { border-color: var(--cyan); box-shadow: var(--cyan-glow); }
 
-/* Hamburger */
+/* Menu hamburguesa */
 .hamburger {
   display: none;
   flex-direction: column; gap: 5px;
@@ -219,7 +219,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 .hamburger.open span:nth-child(2) { opacity: 0; }
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* Mobile Nav Drawer */
+/* Menu movil desplegable */
 .nav-drawer {
   position: fixed; top: var(--nav-h); left: 0; right: 0;
   background: rgba(8,8,16,0.97);
@@ -238,7 +238,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
   font-size: 1.1rem;
 }
 
-/* ── Page Layout ── */
+/* ── Estructura de pagina ── */
 .page {
   min-height: 100vh;
   padding-top: var(--nav-h);
@@ -255,7 +255,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
   padding: 0 clamp(16px, 4vw, 48px);
 }
 
-/* ── Section Titles ── */
+/* ── Titulos de seccion ── */
 .section-header {
   text-align: center;
   margin-bottom: 48px;
@@ -281,7 +281,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
   max-width: 500px; margin: 12px auto 0;
 }
 
-/* ── Buttons ── */
+/* ── Botones ── */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 24px;
@@ -318,9 +318,9 @@ nav.navbar.scrolled { border-color: var(--border2); }
 .btn-full { width: 100%; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
-/* ── HOME PAGE ── */
+/* ── PAGINA DE INICIO ── */
 
-/* Hero */
+/* Heroe */
 .hero {
   position: relative;
   min-height: calc(100vh - var(--nav-h));
@@ -409,11 +409,11 @@ nav.navbar.scrolled { border-color: var(--border2); }
 }
 @keyframes float-hint { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
 
-/* Featured Section */
+/* Seccion destacada */
 .section { padding: 80px 0; }
 .section-alt { background: var(--bg2); }
 
-/* Concert Cards Grid */
+/* Cuadricula de tarjetas de conciertos */
 .concerts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -421,7 +421,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 }
 .concerts-grid.large { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
 
-/* Concert Card */
+/* Tarjeta de concierto */
 .concert-card {
   background: var(--bg3);
   border: 1px solid var(--border);
@@ -500,7 +500,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 }
 .card-price .price-currency { font-size: 0.85rem; margin-right: 2px; }
 
-/* ── Genre Filter Pills ── */
+/* ── Filtros por genero ── */
 .filter-pills {
   display: flex; gap: 8px; flex-wrap: wrap;
   margin-bottom: 32px;
@@ -522,7 +522,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
   box-shadow: 0 0 12px rgba(0,229,255,0.2);
 }
 
-/* ── EVENTS PAGE ── */
+/* ── PAGINA DE EVENTOS ── */
 .events-page-header {
   padding: 60px 0 40px;
   border-bottom: 1px solid var(--border);
@@ -582,7 +582,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 .no-results-icon { font-size: 4rem; margin-bottom: 16px; }
 .no-results-title { font-family: var(--font-display); font-size: 2rem; margin-bottom: 8px; }
 
-/* ── EVENT DETAIL PAGE ── */
+/* ── PAGINA DETALLE DE EVENTO ── */
 .event-detail { padding: 48px 0 80px; }
 
 .event-hero-banner {
@@ -656,7 +656,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
   font-size: 0.95rem;
 }
 
-/* Venue Map placeholder */
+/* Marcador de mapa del venue */
 .venue-map {
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -687,7 +687,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 .venue-pin-label { font-weight: 600; }
 .venue-pin-sub { color: var(--text-muted); font-size: 0.85rem; }
 
-/* Ticket Selector */
+/* Selector de boletos */
 .ticket-sticky {
   position: sticky; top: calc(var(--nav-h) + 24px);
 }
@@ -770,7 +770,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 }
 .ticket-add-btn { padding: 20px; border-top: 1px solid var(--border); }
 
-/* ── CART PAGE ── */
+/* ── PAGINA DE CARRITO ── */
 .cart-page { padding: 48px 0 80px; }
 .cart-title {
   font-family: var(--font-display);
@@ -866,7 +866,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 .coupon-input:focus { border-color: var(--cyan); }
 .coupon-input::placeholder { color: var(--text-dim); }
 
-/* ── CHECKOUT PAGE ── */
+/* ── PAGINA DE CHECKOUT ── */
 .checkout-page { padding: 48px 0 80px; }
 .checkout-title {
   font-family: var(--font-display);
@@ -941,7 +941,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 
 .divider { height: 1px; background: var(--border); margin: 28px 0; }
 
-/* ── CONFIRMATION PAGE ── */
+/* ── PAGINA DE CONFIRMACION ── */
 .confirm-page {
   padding: 80px 0;
   display: flex; flex-direction: column;
@@ -1012,7 +1012,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
 .barcode-img { font-size: 3rem; letter-spacing: 0.2em; line-height: 1; margin-bottom: 8px; }
 .barcode-num { font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.15em; font-family: monospace; }
 
-/* ── AUTH PAGE ── */
+/* ── PAGINA DE AUTENTICACION ── */
 .auth-page {
   min-height: calc(100vh - var(--nav-h));
   display: flex; align-items: center; justify-content: center;
@@ -1071,7 +1071,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
   content: ''; flex: 1; height: 1px; background: var(--border);
 }
 
-/* ── PROFILE PAGE ── */
+/* ── PAGINA DE PERFIL ── */
 .profile-page { padding: 48px 0 80px; }
 .profile-header {
   display: flex; gap: 24px; align-items: center;
@@ -1132,7 +1132,7 @@ nav.navbar.scrolled { border-color: var(--border2); }
   padding: 8px 0; border-top: 1px solid var(--border);
 }
 
-/* ── Toast Notifications ── */
+/* ── Notificaciones toast ── */
 #toast-container {
   position: fixed; bottom: 24px; right: 24px;
   display: flex; flex-direction: column;
@@ -1157,14 +1157,14 @@ nav.navbar.scrolled { border-color: var(--border2); }
 @keyframes toast-in  { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 @keyframes toast-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 
-/* ── Glow Accents ── */
+/* ── Acentos neon ── */
 .neon-line {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--cyan), var(--pink), transparent);
   opacity: 0.3; margin: 0;
 }
 
-/* ── Footer ── */
+/* ── Pie de pagina ── */
 footer {
   background: var(--bg2);
   border-top: 1px solid var(--border);
@@ -1211,7 +1211,7 @@ footer {
 }
 .footer-social:hover { border-color: var(--cyan); box-shadow: var(--cyan-glow); }
 
-/* ── Promo Banner ── */
+/* ── Banner promocional ── */
 .promo-banner {
   background: linear-gradient(135deg, rgba(0,229,255,0.08), rgba(123,47,255,0.12), rgba(255,45,120,0.08));
   border: 1px solid rgba(0,229,255,0.15);
@@ -1228,7 +1228,7 @@ footer {
 }
 .promo-sub { color: var(--text-muted); }
 
-/* ── Responsive ── */
+/* ── Responsivo ── */
 @media (max-width: 1024px) {
   .detail-layout { grid-template-columns: 1fr; }
   .ticket-sticky { position: static; }
@@ -1260,7 +1260,7 @@ footer {
   .btn-lg { width: 100%; }
 }
 
-/* ── Utilities ── */
+/* ── Utilidades ── */
 .hidden { display: none !important; }
 .text-cyan  { color: var(--cyan); }
 .text-pink  { color: var(--pink); }

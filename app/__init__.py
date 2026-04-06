@@ -26,7 +26,7 @@ def create_app(config_class=Config):
     app.register_blueprint(admin_bp)
     app.register_blueprint(orders_bp)
 
-    # Import models so Flask-Migrate can detect them.
+    # Importa los modelos para que Flask-Migrate pueda detectarlos.
     from . import models  # noqa: F401
     from .models.user import User
 

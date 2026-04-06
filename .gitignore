@@ -15,3 +15,17 @@ instance/*.db
 
 # IDE noise
 .vscode/settings.json
+
+# AI agent customization (local only)
+.github/copilot-instructions.md
+.github/instructions/
+.github/prompts/
+.github/skills/
+AGENTS.md
+AGENT.md
+CLAUDE.md
+.cursorrules
+.windsurfrules
+.clinerules
+.cursor/
+.windsurf/

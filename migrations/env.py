@@ -5,22 +5,22 @@ from flask import current_app
 
 from alembic import context
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# este es el objeto Config de Alembic, que proporciona
+# acceso a los valores del archivo .ini en uso.
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
+# Interpreta el archivo de configuracion para logging de Python.
+# Esta linea configura los loggers.
 fileConfig(config.config_file_name)
 logger = logging.getLogger('alembic.env')
 
 
 def get_engine():
     try:
-        # this works with Flask-SQLAlchemy<3 and Alchemical
+        # esto funciona con Flask-SQLAlchemy<3 y Alchemical
         return current_app.extensions['migrate'].db.get_engine()
     except (TypeError, AttributeError):
-        # this works with Flask-SQLAlchemy>=3
+        # esto funciona con Flask-SQLAlchemy>=3
         return current_app.extensions['migrate'].db.engine
 
 
@@ -32,15 +32,15 @@ def get_engine_url():
         return str(get_engine().url).replace('%', '%%')
 
 
-# add your model's MetaData object here
-# for 'autogenerate' support
+# agrega aqui el objeto MetaData de tus modelos
+# para soporte de 'autogenerate'
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 config.set_main_option('sqlalchemy.url', get_engine_url())
 target_db = current_app.extensions['migrate'].db
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
+# otros valores de configuracion, definidos por las necesidades de env.py,
+# pueden obtenerse asi:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
@@ -80,9 +80,9 @@ def run_migrations_online():
 
     """
 
-    # this callback is used to prevent an auto-migration from being generated
-    # when there are no changes to the schema
-    # reference: http://alembic.zzzcomputing.com/en/latest/cookbook.html
+    # este callback se usa para evitar que se genere una automigracion
+    # cuando no hay cambios en el esquema
+    # referencia: http://alembic.zzzcomputing.com/en/latest/cookbook.html
     def process_revision_directives(context, revision, directives):
         if getattr(config.cmd_opts, 'autogenerate', False):
             script = directives[0]

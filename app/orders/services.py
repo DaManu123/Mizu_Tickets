@@ -24,7 +24,7 @@ def process_purchase(user, ticket_type_id, quantity):
         return PurchaseResult(False, error="El evento no esta disponible.")
 
     try:
-        # Atomic stock update: succeeds only when there is enough inventory.
+        # Actualizacion atomica de stock: solo funciona si hay inventario suficiente.
         stock_update = (
             update(TicketType)
             .where(TicketType.id == ticket_type.id)
