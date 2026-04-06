@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Crear evento - Mizu Tickets{% endblock %}
+
+{% block content %}
+<div class="page checkout-page">
+  <div class="container">
+    <h1 class="checkout-title">CREAR EVENTO</h1>
+
+    <div class="checkout-layout" style="grid-template-columns:1fr 360px">
+      <div>
+        <div class="form-card">
+          <div class="form-section-title">Informacion del evento</div>
+          <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="title">{{ form.title.label.text }}</label>
+                {{ form.title(class_='form-input' + (' error' if form.title.errors else ''), id='title', placeholder='Titulo del evento') }}
+                {% for error in form.title.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="description">{{ form.description.label.text }}</label>
+                {{ form.description(class_='form-input' + (' error' if form.description.errors else ''), id='description', rows='5', placeholder='Descripcion del evento') }}
+                {% for error in form.description.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="form-row cols2">
+              <div class="form-group">
+                <label class="form-label" for="date">{{ form.date.label.text }}</label>
+                {{ form.date(class_='form-input' + (' error' if form.date.errors else ''), id='date', type='datetime-local') }}
+                {% for error in form.date.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="venue">{{ form.venue.label.text }}</label>
+                {{ form.venue(class_='form-input' + (' error' if form.venue.errors else ''), id='venue', placeholder='Venue') }}
+                {% for error in form.venue.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="image_url">{{ form.image_url.label.text }}</label>
+                {{ form.image_url(class_='form-input' + (' error' if form.image_url.errors else ''), id='image_url', placeholder='https://...') }}
+                {% for error in form.image_url.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="form-section-title">Tipos de boletos iniciales</div>
+
+            <div class="form-row cols2">
+              <div class="form-group">
+                <label class="form-label" for="ticket1_name">{{ form.ticket1_name.label.text }}</label>
+                {{ form.ticket1_name(class_='form-input' + (' error' if form.ticket1_name.errors else ''), id='ticket1_name', placeholder='General') }}
+                {% for error in form.ticket1_name.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ticket1_price">{{ form.ticket1_price.label.text }}</label>
+                {{ form.ticket1_price(class_='form-input' + (' error' if form.ticket1_price.errors else ''), id='ticket1_price', step='0.01', placeholder='0.00') }}
+                {% for error in form.ticket1_price.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="ticket1_stock">{{ form.ticket1_stock.label.text }}</label>
+                {{ form.ticket1_stock(class_='form-input' + (' error' if form.ticket1_stock.errors else ''), id='ticket1_stock', min='0', placeholder='100') }}
+                {% for error in form.ticket1_stock.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="form-row cols2">
+              <div class="form-group">
+                <label class="form-label" for="ticket2_name">{{ form.ticket2_name.label.text }}</label>
+                {{ form.ticket2_name(class_='form-input' + (' error' if form.ticket2_name.errors else ''), id='ticket2_name', placeholder='VIP') }}
+                {% for error in form.ticket2_name.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ticket2_price">{{ form.ticket2_price.label.text }}</label>
+                {{ form.ticket2_price(class_='form-input' + (' error' if form.ticket2_price.errors else ''), id='ticket2_price', step='0.01', placeholder='0.00') }}
+                {% for error in form.ticket2_price.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="ticket2_stock">{{ form.ticket2_stock.label.text }}</label>
+                {{ form.ticket2_stock(class_='form-input' + (' error' if form.ticket2_stock.errors else ''), id='ticket2_stock', min='0', placeholder='50') }}
+                {% for error in form.ticket2_stock.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="form-row">
+              {{ form.submit(class_='btn btn-primary btn-lg') }}
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <div class="order-summary">
+          <div class="order-summary-title">Consejo rapido</div>
+          <div class="summary-line"><span>Estado</span><span>is_active = True</span></div>
+          <div class="summary-line"><span>Tipos iniciales</span><span>2 obligatorios</span></div>
+          <div class="summary-line total"><span>Creacion</span><span class="val">Admin</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
