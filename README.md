@@ -9,12 +9,19 @@ Proyecto de venta de boletos con Flask (SSR), SQLAlchemy y SQLite.
 
 ## Instalacion y ejecucion
 
-1. Instala dependencias:
+1. Crea y activa tu entorno virtual (`.venv`).
+2. Instala dependencias:
    `pip install -r requirements.txt`
-2. Aplica migraciones:
+3. Crea tu archivo de entorno local:
+   - copia `.env.example` a `.env`
+   - define al menos `SECRET_KEY`
+4. Aplica migraciones:
    `flask --app run.py db upgrade`
-3. Ejecuta el proyecto:
+5. Ejecuta el proyecto:
    `python run.py`
+
+Opcional (modo debug recomendado en desarrollo):
+`flask --app run.py run --debug`
 
 ## Base de datos
 
