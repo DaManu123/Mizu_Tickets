@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Mizu Tickets{% endblock %}</title>
+  <style>
+    body { font-family: Segoe UI, sans-serif; margin: 2rem; }
+    .flash { padding: 0.75rem; margin-bottom: 0.75rem; border-radius: 0.5rem; }
+    .flash.success { background: #eaf9ef; border: 1px solid #67c587; }
+    .flash.error { background: #fdeceb; border: 1px solid #d16a61; }
+    form { max-width: 420px; display: grid; gap: 0.75rem; }
+    input { padding: 0.5rem; }
+    button { padding: 0.5rem 0.75rem; }
+  </style>
+</head>
+<body>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</body>
+</html>

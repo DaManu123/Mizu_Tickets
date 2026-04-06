@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar sesion - Mizu Tickets{% endblock %}
+
+{% block content %}
+<h1>Iniciar sesion</h1>
+<form method="post">
+  {{ form.hidden_tag() }}
+  <label>{{ form.email.label }} {{ form.email() }}</label>
+  <label>{{ form.password.label }} {{ form.password() }}</label>
+  {{ form.submit() }}
+</form>
+<p><a href="{{ url_for('auth.register') }}">Crear cuenta</a></p>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - Mizu Tickets{% endblock %}
+
+{% block content %}
+<h1>Registro</h1>
+<form method="post">
+  {{ form.hidden_tag() }}
+  <label>{{ form.name.label }} {{ form.name() }}</label>
+  <label>{{ form.email.label }} {{ form.email() }}</label>
+  <label>{{ form.password.label }} {{ form.password() }}</label>
+  <label>{{ form.confirm_password.label }} {{ form.confirm_password() }}</label>
+  {{ form.submit() }}
+</form>
+<p><a href="{{ url_for('auth.login') }}">Ya tengo cuenta</a></p>
+{% endblock %}

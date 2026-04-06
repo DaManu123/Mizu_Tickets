@@ -16,6 +16,12 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
+    from .auth import bp as auth_bp
+    from .main import bp as main_bp
+
+    app.register_blueprint(main_bp)
+    app.register_blueprint(auth_bp)
+
     # Import models so Flask-Migrate can detect them.
     from . import models  # noqa: F401
     from .models.user import User
