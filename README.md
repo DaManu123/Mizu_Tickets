@@ -1,24 +1,58 @@
-# Mizu Tickets - Sprint 1 (Phase 1)
+# Mizu Tickets
 
-Backend foundation for the Flask SSR migration.
+Proyecto de venta de boletos con Flask (SSR), SQLAlchemy y SQLite.
 
-## Setup
+## Requisitos
 
-1. Create and activate your virtual environment.
-2. Install dependencies:
-   pip install -r requirements.txt
-3. Initialize database migrations:
-   flask --app run.py db init
-4. Create first migration:
-   flask --app run.py db migrate -m "Initial schema"
-5. Apply migration:
-   flask --app run.py db upgrade
+- Python 3.10+
+- Entorno virtual recomendado (`.venv`)
 
-## Core Data Model
+## Instalacion y ejecucion
 
-- User (1:N) Order
-- Event (1:N) TicketType
-- Order (1:N) OrderItem
+1. Instala dependencias:
+   `pip install -r requirements.txt`
+2. Aplica migraciones:
+   `flask --app run.py db upgrade`
+3. Ejecuta el proyecto:
+   `python run.py`
 
-OrderItem stores `unit_price` and `subtotal` to preserve immutable purchase history.
-Event includes `is_active` for soft-delete style behavior.
+## Base de datos
+
+- Motor: SQLite
+- Archivo principal: `instance/app.db`
+
+## Funcionalidades implementadas (Sprint 1)
+
+- Registro, login y logout
+- Catalogo de eventos
+- Detalle de evento y seleccion de boletos
+- Compra con descuento de stock en tiempo real
+- Confirmacion de compra
+- Panel admin para crear eventos con tipos de boletos iniciales
+
+## Modelos principales
+
+- `User` (1:N) `Order`
+- `Event` (1:N) `TicketType`
+- `Order` (1:N) `OrderItem`
+
+Notas:
+- `OrderItem` guarda `unit_price` y `subtotal` para historial inmutable.
+- `Event` usa `is_active` para soft delete.
+
+## Rutas principales
+
+- `/` Catalogo
+- `/event/<id>` Detalle de evento
+- `/login` Login
+- `/register` Registro
+- `/checkout` Checkout/confirmacion de compra (POST)
+- `/confirmation/<order_id>` Confirmacion
+- `/admin/create-event` Crear evento (solo admin)
+
+## Admin
+
+Para ver "Crear evento" en el navbar, el usuario debe tener rol `admin`.
+Ejemplo para cambiar rol:
+
+`UPDATE users SET role = 'admin' WHERE email = 'tu_correo@ejemplo.com';`
