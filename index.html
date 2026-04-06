@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeonStage — Tickets para Conciertos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Partículas de fondo -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- App root -->
+  <div id="app">
+    <div class="page-loader">
+      <div class="loader-logo">NEONSTAGE</div>
+      <div class="loader-bar"><div class="loader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="toast-container"></div>
+
+  <!-- Modal overlay -->
+  <div id="modal-overlay" class="hidden"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
