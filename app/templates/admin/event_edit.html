@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Editar evento - Mizu Tickets{% endblock %}
+
+{% block content %}
+<div class="page checkout-page">
+  <div class="container">
+    <h1 class="checkout-title">EDITAR EVENTO</h1>
+
+    <div class="checkout-layout" style="grid-template-columns:1fr 360px">
+      <div>
+        <div class="form-card">
+          <div class="form-section-title">Informacion del evento</div>
+          <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="title">{{ form.title.label.text }}</label>
+                {{ form.title(class_='form-input' + (' error' if form.title.errors else ''), id='title', placeholder='Titulo del evento') }}
+                {% for error in form.title.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="description">{{ form.description.label.text }}</label>
+                {{ form.description(class_='form-input' + (' error' if form.description.errors else ''), id='description', rows='5', placeholder='Descripcion del evento') }}
+                {% for error in form.description.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="form-row cols2">
+              <div class="form-group">
+                <label class="form-label" for="date">{{ form.date.label.text }}</label>
+                {{ form.date(class_='form-input' + (' error' if form.date.errors else ''), id='date', type='datetime-local') }}
+                {% for error in form.date.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="venue">{{ form.venue.label.text }}</label>
+                {{ form.venue(class_='form-input' + (' error' if form.venue.errors else ''), id='venue', placeholder='Venue') }}
+                {% for error in form.venue.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="image_url">{{ form.image_url.label.text }}</label>
+                {{ form.image_url(class_='form-input' + (' error' if form.image_url.errors else ''), id='image_url', placeholder='https://...') }}
+                {% for error in form.image_url.errors %}<span class="form-error">{{ error }}</span>{% endfor %}
+              </div>
+            </div>
+
+            <div class="form-row">
+              {{ form.submit(class_='btn btn-primary btn-lg') }}
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <div class="order-summary">
+          <div class="order-summary-title">Evento actual</div>
+          <div class="summary-line"><span>ID</span><span>#{{ event.id }}</span></div>
+          <div class="summary-line"><span>Estado</span><span>{{ 'Activo' if event.is_active else 'Oculto' }}</span></div>
+          <div class="summary-line total"><span>Edicion</span><span class="val">Admin</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

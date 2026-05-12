@@ -70,7 +70,11 @@
                   {% endif %}
                 </div>
               </div>
-              <a class="btn btn-primary btn-sm" href="{{ url_for('main.event_detail', id=event.id) }}">Ver tickets →</a>
+              {% if total_stock > 0 %}
+                <a class="btn btn-primary btn-sm" href="{{ url_for('main.event_detail', id=event.id) }}">Ver tickets →</a>
+              {% else %}
+                <button class="btn btn-ghost btn-sm" type="button" disabled>Agotado</button>
+              {% endif %}
             </div>
           </div>
         </article>

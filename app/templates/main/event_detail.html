@@ -3,9 +3,20 @@
 {% block title %}{{ event.title }} - Mizu Tickets{% endblock %}
 
 {% block content %}
+{% set total_stock = event.ticket_types | map(attribute='stock_available') | sum if event.ticket_types else 0 %}
+{% set has_stock = total_stock > 0 %}
 <div class="page event-detail">
   <div class="container">
     <a class="btn btn-ghost btn-sm mb24" href="{{ url_for('main.catalog') }}">← Volver</a>
+
+    {% if current_user.is_authenticated and current_user.role == 'admin' %}
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.edit_event', event_id=event.id) }}">Editar Evento</a>
+      <form method="post" action="{{ url_for('admin.delete_event', event_id=event.id) }}" onsubmit="return confirm('¿Seguro que deseas ocultar este evento?');" style="display:inline">
+        <button class="btn btn-ghost btn-sm" type="submit">Eliminar Evento</button>
+      </form>
+    </div>
+    {% endif %}
 
     <div class="event-hero-banner">
       <img src="{{ event.image_url or 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1400&q=80' }}" alt="{{ event.title }}">
@@ -35,7 +46,7 @@
             </div>
             <div class="info-item">
               <div class="info-label">Disponibilidad</div>
-              <div class="info-value">{{ event.ticket_types | map(attribute='stock_available') | sum if event.ticket_types else 0 }} boletos</div>
+              <div class="info-value">{{ total_stock }} boletos</div>
             </div>
           </div>
         </div>
@@ -85,14 +96,18 @@
 
             <div class="ticket-qty-row">
               <label class="qty-label" for="quantity">Cantidad</label>
-              <input class="form-input" id="quantity" name="quantity" type="number" min="1" max="10" value="1" required style="max-width:96px">
+              <input class="form-input" id="quantity" name="quantity" type="number" min="1" max="10" value="1" required style="max-width:96px" {% if not has_stock %}disabled{% endif %}>
             </div>
 
             <div class="ticket-add-btn">
-              {% if current_user.is_authenticated %}
-                <button class="btn btn-primary btn-full btn-lg" type="submit">Confirmar compra</button>
+              {% if has_stock %}
+                {% if current_user.is_authenticated %}
+                  <button class="btn btn-primary btn-full btn-lg" type="submit">Confirmar compra</button>
+                {% else %}
+                  <a class="btn btn-primary btn-full btn-lg" href="{{ url_for('auth.login', next=request.path) }}">Inicia sesion para comprar</a>
+                {% endif %}
               {% else %}
-                <a class="btn btn-primary btn-full btn-lg" href="{{ url_for('auth.login', next=request.path) }}">Inicia sesion para comprar</a>
+                <button class="btn btn-ghost btn-full btn-lg" type="button" disabled>Agotado</button>
               {% endif %}
             </div>
           </form>
@@ -102,6 +117,34 @@
           </div>
           {% endif %}
         </div>
+
+        {% if current_user.is_authenticated and current_user.role == 'admin' and event.ticket_types %}
+        <div class="detail-section" style="margin-top:24px">
+          <div class="detail-section-title">Gestion de disponibilidad</div>
+          <div class="ticket-options">
+            {% for ticket in event.ticket_types %}
+            <form method="post" action="{{ url_for('admin.update_stock', ticket_type_id=ticket.id) }}" class="ticket-option" style="margin-bottom:16px">
+              {{ stock_form.hidden_tag() }}
+              <span class="ticket-type-name">{{ ticket.name }}</span>
+              <span class="ticket-type-desc">Actualiza el stock de este tipo de boleto.</span>
+              <span class="ticket-type-footer" style="align-items:center;gap:12px;flex-wrap:wrap">
+                <input
+                  class="form-input"
+                  id="stock-{{ ticket.id }}"
+                  name="stock"
+                  type="number"
+                  min="0"
+                  value="{{ ticket.stock_available }}"
+                  required
+                  style="max-width:120px"
+                >
+                <button class="btn btn-primary btn-sm" type="submit">Actualizar stock</button>
+              </span>
+            </form>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>

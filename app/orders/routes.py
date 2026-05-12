@@ -1,7 +1,11 @@
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 
 from ..models.order import Order
+from ..models.order_item import OrderItem
+from ..models.ticket_type import TicketType
 from . import bp
 from .services import process_purchase
 
@@ -39,3 +43,55 @@ def checkout():
 def confirmation(order_id):
     order = Order.query.filter_by(id=order_id, user_id=current_user.id).first_or_404()
     return render_template("orders/confirmation.html", order=order)
+
+
+@bp.route("/orders/<int:order_id>/receipt")
+@login_required
+def receipt(order_id):
+    """Sirve el comprobante de compra (recibo) de una orden."""
+    try:
+        order = (
+            Order.query.options(
+                joinedload(Order.items)
+                .joinedload(OrderItem.ticket_type)
+                .joinedload(TicketType.event)
+            )
+            .filter_by(id=order_id)
+            .first_or_404()
+        )
+        
+        # Validar seguridad: solo el propietario de la orden o un admin puede verla
+        if current_user.id != order.user_id and current_user.role != "admin":
+            from flask import abort
+            abort(403)
+        
+        return render_template("orders/receipt.html", order=order)
+    except SQLAlchemyError:
+        flash("No se pudo cargar el comprobante.", "error")
+        return redirect(url_for("orders.history"))
+    except Exception:
+        flash("No se pudo cargar el comprobante.", "error")
+        return redirect(url_for("orders.history"))
+
+
+@bp.route("/orders/history")
+@login_required
+def history():
+    try:
+        orders = (
+            Order.query.options(
+                joinedload(Order.items)
+                .joinedload(OrderItem.ticket_type)
+                .joinedload(TicketType.event)
+            )
+            .filter(Order.user_id == current_user.id)
+            .order_by(Order.created_at.desc())
+            .all()
+        )
+        return render_template("orders/history.html", orders=orders)
+    except SQLAlchemyError:
+        flash("No se pudo cargar tu historial en este momento.", "error")
+        return render_template("orders/history.html", orders=[])
+    except Exception:
+        flash("No se pudo cargar tu historial en este momento.", "error")
+        return render_template("orders/history.html", orders=[])

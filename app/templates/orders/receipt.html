@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Comprobante #{{ order.receipt_code }} - Mizu Tickets{% endblock %}
+
+{% block content %}
+<style>
+  @media print {
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .page {
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar,
+    .footer,
+    .receipt-actions {
+      display: none !important;
+    }
+    .receipt-container {
+      margin: 0;
+      padding: 20px;
+      box-shadow: none;
+      page-break-after: avoid;
+    }
+  }
+  
+  .receipt-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(0, 255, 230, 0.05) 0%, rgba(255, 0, 128, 0.05) 100%);
+  }
+  
+  .receipt-container {
+    background: white;
+    border: 2px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  .receipt-header {
+    text-align: center;
+    border-bottom: 2px dashed var(--border-color, #e0e0e0);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .receipt-logo {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--cyan, #00ffff), var(--magenta, #ff0080));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  
+  .receipt-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text, #1a1a1a);
+    margin: 0;
+  }
+  
+  .receipt-code {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cyan, #00ffff);
+    font-family: monospace;
+    margin-top: 8px;
+  }
+  
+  .receipt-body {
+    margin-bottom: 24px;
+  }
+  
+  .receipt-section {
+    margin-bottom: 20px;
+  }
+  
+  .receipt-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted, #666);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+  }
+  
+  .receipt-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 14px;
+    color: var(--text, #1a1a1a);
+  }
+  
+  .receipt-line-label {
+    color: var(--text-muted, #666);
+  }
+  
+  .receipt-line-value {
+    font-weight: 500;
+  }
+  
+  .receipt-item {
+    background: var(--bg-secondary, #f5f5f5);
+    border-left: 3px solid var(--cyan, #00ffff);
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 4px;
+  }
+  
+  .receipt-item-title {
+    font-weight: 600;
+    color: var(--text, #1a1a1a);
+    margin-bottom: 4px;
+  }
+  
+  .receipt-item-meta {
+    font-size: 12px;
+    color: var(--text-muted, #666);
+    margin-bottom: 8px;
+  }
+  
+  .receipt-item-price {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cyan, #00ffff);
+  }
+  
+  .receipt-total {
+    border-top: 2px solid var(--border-color, #e0e0e0);
+    border-bottom: 2px dashed var(--border-color, #e0e0e0);
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 20px 0;
+    color: var(--text, #1a1a1a);
+  }
+  
+  .receipt-total-label {
+    color: var(--text-muted, #666);
+  }
+  
+  .receipt-total-value {
+    color: var(--cyan, #00ffff);
+    font-size: 24px;
+  }
+  
+  .receipt-footer {
+    text-align: center;
+    border-top: 2px dashed var(--border-color, #e0e0e0);
+    padding-top: 16px;
+    font-size: 12px;
+    color: var(--text-muted, #666);
+  }
+  
+  .receipt-footer-text {
+    margin: 4px 0;
+  }
+  
+  .receipt-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+  }
+  
+  .btn-print {
+    padding: 10px 20px;
+    background: var(--cyan, #00ffff);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .btn-print:hover {
+    background: var(--cyan-bright, #00ffff);
+    opacity: 0.9;
+  }
+  
+  .btn-back {
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--text, #1a1a1a);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .btn-back:hover {
+    background: var(--bg-secondary, #f5f5f5);
+  }
+</style>
+
+<div class="receipt-page">
+  <div class="receipt-container">
+    <!-- Header -->
+    <div class="receipt-header">
+      <div class="receipt-logo">Mizu Tickets</div>
+      <div class="receipt-title">COMPROBANTE DE COMPRA</div>
+      <div class="receipt-code">{{ order.receipt_code }}</div>
+    </div>
+
+    <!-- Body -->
+    <div class="receipt-body">
+      <!-- Información de la orden -->
+      <div class="receipt-section">
+        <div class="receipt-section-title">Informacion de la orden</div>
+        <div class="receipt-line">
+          <span class="receipt-line-label">Numero de orden</span>
+          <span class="receipt-line-value">#{{ order.id }}</span>
+        </div>
+        <div class="receipt-line">
+          <span class="receipt-line-label">Fecha</span>
+          <span class="receipt-line-value">{{ order.created_at.strftime('%d/%m/%Y') }}</span>
+        </div>
+        <div class="receipt-line">
+          <span class="receipt-line-label">Hora</span>
+          <span class="receipt-line-value">{{ order.created_at.strftime('%H:%M:%S') }}</span>
+        </div>
+        <div class="receipt-line">
+          <span class="receipt-line-label">Estado</span>
+          <span class="receipt-line-value">{{ 'Confirmada' if order.status == 'confirmed' else order.status }}</span>
+        </div>
+      </div>
+
+      <!-- Información del cliente -->
+      <div class="receipt-section">
+        <div class="receipt-section-title">Cliente</div>
+        <div class="receipt-line">
+          <span class="receipt-line-label">Nombre</span>
+          <span class="receipt-line-value">{{ current_user.name }}</span>
+        </div>
+        <div class="receipt-line">
+          <span class="receipt-line-label">Email</span>
+          <span class="receipt-line-value">{{ current_user.email }}</span>
+        </div>
+      </div>
+
+      <!-- Items de la compra -->
+      <div class="receipt-section">
+        <div class="receipt-section-title">Boletos</div>
+        {% for item in order.items %}
+        <div class="receipt-item">
+          <div class="receipt-item-title">{{ item.ticket_type.event.title }}</div>
+          <div class="receipt-item-meta">
+            <div>Tipo: <strong>{{ item.ticket_type.name }}</strong></div>
+            <div>Cantidad: <strong>{{ item.quantity }}</strong></div>
+            <div>Fecha evento: <strong>{{ item.ticket_type.event.date.strftime('%d/%m/%Y %H:%M') }}</strong></div>
+          </div>
+          <div class="receipt-item-price">
+            <span>${{ '%.2f'|format(item.unit_price) }} c/u</span>
+            <span>${{ '%.2f'|format(item.subtotal) }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Total -->
+      <div class="receipt-total">
+        <span class="receipt-total-label">TOTAL</span>
+        <span class="receipt-total-value">${{ '%.2f'|format(order.total_amount) }}</span>
+      </div>
+
+      <!-- Footer -->
+      <div class="receipt-footer">
+        <div class="receipt-footer-text">Gracias por tu compra en Mizu Tickets</div>
+        <div class="receipt-footer-text">Conserva este comprobante como prueba de tu transaccion</div>
+        <div class="receipt-footer-text" style="margin-top: 12px; font-size: 11px;">
+          {{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="receipt-actions">
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+      <a class="btn-back" href="{{ url_for('orders.history') }}">Volver al historial</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

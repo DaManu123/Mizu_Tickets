@@ -13,6 +13,7 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
     status = db.Column(db.String(20), nullable=False, default="confirmed", index=True)
     total_amount = db.Column(db.Numeric(10, 2), nullable=False)
+    receipt_code = db.Column(db.String(50), unique=True, nullable=True, index=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, index=True)
 
     user = db.relationship("User", back_populates="orders")

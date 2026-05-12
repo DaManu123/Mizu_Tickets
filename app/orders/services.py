@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import datetime
 
 from sqlalchemy import update
 
@@ -13,6 +14,14 @@ class PurchaseResult:
         self.ok = ok
         self.order = order
         self.error = error
+
+
+def generate_receipt_code(order_id, created_at=None):
+    """Genera un receipt_code único para una orden."""
+    if created_at is None:
+        created_at = datetime.utcnow()
+    date_str = created_at.strftime('%Y%m%d')
+    return f"MIZ-{date_str}-{order_id:05d}"
 
 
 def process_purchase(user, ticket_type_id, quantity):
@@ -47,6 +56,9 @@ def process_purchase(user, ticket_type_id, quantity):
         order.total_amount = subtotal
         db.session.add(order)
         db.session.flush()
+
+        # Generar receipt_code después de que la orden tenga su id
+        order.receipt_code = generate_receipt_code(order.id, order.created_at)
 
         order_item = OrderItem()
         order_item.order_id = order.id

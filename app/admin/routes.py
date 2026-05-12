@@ -1,18 +1,23 @@
 from flask import abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
+from sqlalchemy.exc import SQLAlchemyError
 
 from ..extensions import db
 from ..models.event import Event
 from ..models.ticket_type import TicketType
 from . import bp
-from .forms import EventCreateForm
+from .forms import EventCreateForm, EventEditForm, TicketStockForm
+
+
+def _require_admin():
+    if current_user.role != "admin":
+        abort(403)
 
 
 @bp.route("/create-event", methods=["GET", "POST"])
 @login_required
 def create_event():
-    if current_user.role != "admin":
-        abort(403)
+    _require_admin()
 
     form = EventCreateForm()
     if form.validate_on_submit():
@@ -47,3 +52,86 @@ def create_event():
         return redirect(url_for("main.event_detail", id=event.id))
 
     return render_template("admin/event_create.html", form=form)
+
+
+@bp.route("/edit-event/<int:event_id>", methods=["GET", "POST"])
+@login_required
+def edit_event(event_id):
+    _require_admin()
+
+    try:
+        event = Event.query.filter_by(id=event_id, is_active=True).first_or_404()
+    except SQLAlchemyError:
+        flash("No se pudo cargar el evento para editar.", "error")
+        return redirect(url_for("main.catalog"))
+
+    form = EventEditForm(obj=event)
+    if form.validate_on_submit():
+        event.title = form.title.data
+        event.description = form.description.data
+        event.date = form.date.data
+        event.venue = form.venue.data
+        event.image_url = form.image_url.data
+
+        try:
+            db.session.commit()
+            flash("Evento actualizado exitosamente", "success")
+            return redirect(url_for("main.event_detail", id=event.id))
+        except SQLAlchemyError:
+            db.session.rollback()
+            flash("No se pudo actualizar el evento.", "error")
+        except Exception:
+            db.session.rollback()
+            flash("No se pudo actualizar el evento.", "error")
+
+    return render_template("admin/event_edit.html", form=form, event=event)
+
+
+@bp.route("/delete-event/<int:event_id>", methods=["POST"])
+@login_required
+def delete_event(event_id):
+    _require_admin()
+
+    try:
+        event = Event.query.filter_by(id=event_id).first_or_404()
+        event.is_active = False
+        db.session.commit()
+        flash("Evento ocultado exitosamente", "success")
+    except SQLAlchemyError:
+        db.session.rollback()
+        flash("No se pudo ocultar el evento.", "error")
+    except Exception:
+        db.session.rollback()
+        flash("No se pudo ocultar el evento.", "error")
+
+    return redirect(url_for("main.catalog"))
+
+
+@bp.route("/update-stock/<int:ticket_type_id>", methods=["POST"])
+@login_required
+def update_stock(ticket_type_id):
+    _require_admin()
+
+    form = TicketStockForm()
+
+    try:
+        ticket_type = TicketType.query.get_or_404(ticket_type_id)
+    except SQLAlchemyError:
+        flash("No se pudo cargar el tipo de boleto.", "error")
+        return redirect(url_for("main.catalog"))
+
+    if form.validate_on_submit():
+        try:
+            ticket_type.stock_available = form.stock.data
+            db.session.commit()
+            flash("Disponibilidad actualizada exitosamente", "success")
+        except SQLAlchemyError:
+            db.session.rollback()
+            flash("No se pudo actualizar la disponibilidad.", "error")
+        except Exception:
+            db.session.rollback()
+            flash("No se pudo actualizar la disponibilidad.", "error")
+    else:
+        flash("Ingresa un stock valido.", "error")
+
+    return redirect(url_for("main.event_detail", id=ticket_type.event_id))

@@ -37,8 +37,8 @@
 		</div>
 
 		<div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
-			<a class="btn btn-primary btn-lg" href="{{ url_for('main.catalog') }}">Seguir comprando</a>
-			<a class="btn btn-ghost btn-lg" href="{{ url_for('orders.checkout') }}">Ir al checkout</a>
+			<a class="btn btn-primary btn-lg" href="{{ url_for('orders.receipt', order_id=order.id) }}" target="_blank">📄 Ver comprobante</a>
+			<a class="btn btn-ghost btn-lg" href="{{ url_for('main.catalog') }}">Seguir comprando</a>
 		</div>
 	</div>
 </div>

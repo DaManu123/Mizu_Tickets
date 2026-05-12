@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import DecimalField, DateTimeLocalField, IntegerField, StringField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms.validators import DataRequired, InputRequired, Length, NumberRange
 
 
 class EventCreateForm(FlaskForm):
@@ -23,7 +23,7 @@ class EventCreateForm(FlaskForm):
     )
     ticket1_stock = IntegerField(
         "Tipo 1 - Stock",
-        validators=[DataRequired(), NumberRange(min=0)],
+        validators=[InputRequired(), NumberRange(min=0)],
     )
 
     ticket2_name = StringField("Tipo 2 - Nombre", validators=[DataRequired(), Length(max=80)])
@@ -35,7 +35,29 @@ class EventCreateForm(FlaskForm):
     )
     ticket2_stock = IntegerField(
         "Tipo 2 - Stock",
-        validators=[DataRequired(), NumberRange(min=0)],
+        validators=[InputRequired(), NumberRange(min=0)],
     )
 
     submit = SubmitField("Crear evento")
+
+
+class EventEditForm(FlaskForm):
+    title = StringField("Titulo", validators=[DataRequired(), Length(max=200)])
+    description = TextAreaField("Descripcion", validators=[DataRequired(), Length(max=2000)])
+    date = DateTimeLocalField(
+        "Fecha y hora",
+        format="%Y-%m-%dT%H:%M",
+        validators=[DataRequired()],
+    )
+    venue = StringField("Venue", validators=[DataRequired(), Length(max=200)])
+    image_url = StringField("Imagen", validators=[DataRequired(), Length(max=500)])
+
+    submit = SubmitField("Guardar cambios")
+
+
+class TicketStockForm(FlaskForm):
+    stock = IntegerField(
+        "Stock disponible",
+        validators=[InputRequired(), NumberRange(min=0)],
+    )
+    submit = SubmitField("Actualizar stock")
