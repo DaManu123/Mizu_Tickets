@@ -40,13 +40,9 @@
             <td>
               <a class="btn btn-ghost btn-sm" href="{{ url_for('main.event_detail', id=row.event.id) }}">Ver</a>
               <a class="btn btn-primary btn-sm" href="{{ url_for('admin.edit_event', event_id=row.event.id) }}">Editar</a>
-              <form method="post" action="{{ url_for('admin.delete_event', event_id=row.event.id) }}" style="display:inline" onsubmit="return confirm('¿Ocultar evento?');">
-                {{ toggle_form.csrf_token(id='delete-csrf-' ~ row.event.id) }}
-                <button class="btn btn-danger btn-sm" type="submit">Ocultar</button>
-              </form>
               <form class="admin-toggle-form" method="post" action="{{ url_for('admin.toggle_event', event_id=row.event.id) }}" onsubmit="return confirm('{{ '¿Activar evento oculto?' if not row.event.is_active else '¿Ocultar evento?' }}');">
                 {{ toggle_form.csrf_token(id='toggle-csrf-' ~ row.event.id) }}
-                <button class="btn btn-sm {{ 'btn-primary' if not row.event.is_active else 'btn-ghost' }}" type="submit">
+                <button class="btn btn-sm {{ 'btn-primary' if not row.event.is_active else 'btn-danger' }}" type="submit">
                   {{ 'Activar' if not row.event.is_active else 'Ocultar' }}
                 </button>
               </form>

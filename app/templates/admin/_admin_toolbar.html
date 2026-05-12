@@ -9,13 +9,9 @@
     </div>
     <div class="admin-toolbar-actions">
       <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.edit_event', event_id=event.id) }}">Editar</a>
-      <form method="post" action="{{ url_for('admin.delete_event', event_id=event.id) }}" onsubmit="return confirm('¿Seguro que deseas ocultar este evento?');" style="display:inline">
-        {{ toggle_form.csrf_token(id='toolbar-delete-csrf-' ~ event.id) }}
-        <button class="btn btn-danger btn-sm" type="submit">Ocultar</button>
-      </form>
       <form class="admin-toggle-form" method="post" action="{{ url_for('admin.toggle_event', event_id=event.id) }}" onsubmit="return confirm('{{ '¿Activar este evento oculto?' if not event.is_active else '¿Ocultar este evento?' }}');">
         {{ toggle_form.csrf_token(id='toolbar-toggle-csrf-' ~ event.id) }}
-        <button class="btn btn-sm {{ 'btn-primary' if not event.is_active else 'btn-ghost' }}" type="submit">
+        <button class="btn btn-sm {{ 'btn-primary' if not event.is_active else 'btn-danger' }}" type="submit">
           {{ 'Activar evento' if not event.is_active else 'Ocultar evento' }}
         </button>
       </form>

@@ -109,7 +109,7 @@ def delete_event(event_id):
     else:
         flash("Solicitud invalida.", "error")
 
-    return redirect(url_for("main.catalog"))
+    return redirect(request.referrer or url_for("admin.dashboard"))
 
 
 @bp.route("/update-stock/<int:ticket_type_id>", methods=["POST"])
@@ -139,7 +139,7 @@ def update_stock(ticket_type_id):
     else:
         flash("Ingresa un stock valido.", "error")
 
-    return redirect(url_for("main.event_detail", id=ticket_type.event_id))
+    return redirect(request.referrer or url_for("main.event_detail", id=ticket_type.event_id))
 
 
 @bp.route('/dashboard')
@@ -192,4 +192,4 @@ def toggle_event(event_id):
     else:
         flash('Solicitud invalida.', 'error')
 
-    return redirect(url_for('admin.dashboard'))
+    return redirect(request.referrer or url_for('admin.dashboard'))
