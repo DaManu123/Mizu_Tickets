@@ -10,12 +10,7 @@
     <a class="btn btn-ghost btn-sm mb24" href="{{ url_for('main.catalog') }}">← Volver</a>
 
     {% if current_user.is_authenticated and current_user.role == 'admin' %}
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px">
-      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.edit_event', event_id=event.id) }}">Editar Evento</a>
-      <form method="post" action="{{ url_for('admin.delete_event', event_id=event.id) }}" onsubmit="return confirm('¿Seguro que deseas ocultar este evento?');" style="display:inline">
-        <button class="btn btn-ghost btn-sm" type="submit">Eliminar Evento</button>
-      </form>
-    </div>
+      {% include 'admin/_admin_toolbar.html' %}
     {% endif %}
 
     <div class="event-hero-banner">
@@ -119,7 +114,7 @@
         </div>
 
         {% if current_user.is_authenticated and current_user.role == 'admin' and event.ticket_types %}
-        <div class="detail-section" style="margin-top:24px">
+        <div id="inventory" class="detail-section" style="margin-top:24px">
           <div class="detail-section-title">Gestion de disponibilidad</div>
           <div class="ticket-options">
             {% for ticket in event.ticket_types %}

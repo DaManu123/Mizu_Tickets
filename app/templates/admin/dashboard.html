@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Panel - Administrador{% endblock %}
+
+{% block content %}
+<div class="page admin-dashboard">
+  <div class="container">
+    <h1 style="margin-bottom:12px">Panel de Control</h1>
+    <p style="color:var(--text-muted);margin-bottom:18px">Gestiona eventos y stock rápidamente.</p>
+
+    <div class="table-responsive">
+      <table class="admin-table" style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="text-align:left;border-bottom:1px solid var(--border-color)">
+            <th>Evento</th>
+            <th>Fecha</th>
+            <th>Stock total</th>
+            <th>Tipos</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in events %}
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.03)">
+            <td>{{ row.event.title }}</td>
+            <td>{{ row.event.date.strftime('%d/%m/%Y') }}</td>
+            <td>{{ row.stock_total }}</td>
+            <td>{{ row.event.ticket_types|length }}</td>
+            <td>{{ 'Activo' if row.event.is_active else 'Oculto' }}</td>
+            <td>
+              <a class="btn btn-ghost btn-sm" href="{{ url_for('main.event_detail', id=row.event.id) }}">Ver</a>
+              <a class="btn btn-primary btn-sm" href="{{ url_for('admin.edit_event', event_id=row.event.id) }}">Editar</a>
+              <form method="post" action="{{ url_for('admin.delete_event', event_id=row.event.id) }}" style="display:inline" onsubmit="return confirm('¿Ocultar evento?');">
+                <button class="btn btn-danger btn-sm" type="submit">Ocultar</button>
+              </form>
+              <button class="btn btn-outline btn-sm" data-event-id="{{ row.event.id }}" onclick="openStockModal({{ row.event.id }})">Editar stock</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal (simple) -->
+    <div id="stock-modal" class="modal" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);">
+      <div class="modal-card" style="background:#0f0f12;padding:18px;border-radius:8px;max-width:520px;width:100%;">
+        <h3>Editar stock</h3>
+        <form id="stock-form" method="post">
+          <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+            <input id="stock-value" name="stock" type="number" min="0" class="form-input" style="width:140px" required>
+            <button class="btn btn-primary" type="submit">Guardar</button>
+            <button type="button" class="btn btn-ghost" onclick="closeStockModal()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function openStockModal(eventId){
+  const modal = document.getElementById('stock-modal');
+  const form = document.getElementById('stock-form');
+  form.action = '/admin/update-stock/'+eventId; // expects ticket_type id normally; dashboard will set ticket_type explicitly via UI later
+  modal.style.display='flex';
+}
+function closeStockModal(){document.getElementById('stock-modal').style.display='none'}
+</script>
+
+{% endblock %}

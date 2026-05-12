@@ -8,21 +8,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    /* subtle admin indicator */
+    .navbar.admin-mode{box-shadow:0 2px 0 rgba(0,255,230,0.06) inset;border-top:3px solid rgba(0,255,230,0.06)}
+    .navbar.admin-mode .nav-logo{color:var(--cyan)}
+  </style>
 </head>
 <body>
   <canvas id="bg-canvas"></canvas>
 
-  <nav class="navbar" id="navbar">
+  <nav class="navbar {% if current_user.is_authenticated and current_user.role == 'admin' %}admin-mode{% endif %}" id="navbar">
     <a class="nav-logo" href="{{ url_for('main.catalog') }}">MIZUTICKETS</a>
+    {# Role-specific navigation: show admin links only to admins, customer links only to customers #}
     <ul class="nav-links">
       <li><a class="nav-link" href="{{ url_for('main.catalog') }}">Inicio</a></li>
       <li><a class="nav-link" href="{{ url_for('main.catalog') }}">Eventos</a></li>
       {% if current_user.is_authenticated %}
-      <li><a class="nav-link" href="#">Mi Perfil</a></li>
-      <li><a class="nav-link" href="{{ url_for('orders.history') }}">Historial</a></li>
-      {% if current_user.role == 'admin' %}
-      <li><a class="nav-link" href="{{ url_for('admin.create_event') }}">Crear evento</a></li>
-      {% endif %}
+        {% if current_user.role == 'admin' %}
+          <li><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Panel</a></li>
+          <li><a class="nav-link" href="{{ url_for('admin.create_event') }}">Crear evento</a></li>
+        {% else %}
+          <li><a class="nav-link" href="#">Mi Perfil</a></li>
+          <li><a class="nav-link" href="{{ url_for('orders.history') }}">Historial</a></li>
+        {% endif %}
       {% endif %}
     </ul>
     <div class="nav-actions">
@@ -43,16 +51,19 @@
     <a class="nav-link" href="{{ url_for('main.catalog') }}">Inicio</a>
     <a class="nav-link" href="{{ url_for('main.catalog') }}">Eventos</a>
     {% if current_user.is_authenticated %}
-    {% if current_user.role == 'admin' %}
-    <a class="nav-link" href="{{ url_for('admin.create_event') }}">Crear evento</a>
-    {% endif %}
-    <a class="nav-link" href="{{ url_for('orders.history') }}">Historial</a>
-    <form method="post" action="{{ url_for('auth.logout') }}">
-      <button class="nav-link" type="submit">Cerrar sesion</button>
-    </form>
+      {% if current_user.role == 'admin' %}
+        <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Panel</a>
+        <a class="nav-link" href="{{ url_for('admin.create_event') }}">Crear evento</a>
+      {% else %}
+        <a class="nav-link" href="#">Mi Perfil</a>
+        <a class="nav-link" href="{{ url_for('orders.history') }}">Historial</a>
+      {% endif %}
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <button class="nav-link" type="submit">Cerrar sesion</button>
+      </form>
     {% else %}
-    <a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesion</a>
-    <a class="nav-link" href="{{ url_for('auth.register') }}">Crear cuenta</a>
+      <a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar sesion</a>
+      <a class="nav-link" href="{{ url_for('auth.register') }}">Crear cuenta</a>
     {% endif %}
   </div>
 

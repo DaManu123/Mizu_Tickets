@@ -1,6 +1,7 @@
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 
 from ..extensions import db
 from ..models.event import Event
@@ -135,3 +136,24 @@ def update_stock(ticket_type_id):
         flash("Ingresa un stock valido.", "error")
 
     return redirect(url_for("main.event_detail", id=ticket_type.event_id))
+
+
+@bp.route('/dashboard')
+@login_required
+def dashboard():
+    _require_admin()
+    try:
+        events = (
+            Event.query.order_by(Event.date.desc()).all()
+        )
+
+        # compute stock_total for template convenience
+        events_data = []
+        for ev in events:
+            stock_total = sum([tt.stock_available for tt in ev.ticket_types]) if ev.ticket_types else 0
+            events_data.append({'event': ev, 'stock_total': stock_total})
+
+        return render_template('admin/dashboard.html', events=events_data)
+    except SQLAlchemyError:
+        flash('No se pudo cargar el panel de administración.', 'error')
+        return redirect(url_for('main.catalog'))

@@ -1,0 +1,23 @@
+<div class="admin-toolbar">
+  <div class="admin-toolbar-inner">
+    <div class="admin-toolbar-left">
+      <div class="admin-badge">Modo Administrador</div>
+      <div class="admin-msg">Estás viendo este evento como Administrador</div>
+    </div>
+    <div class="admin-toolbar-actions">
+      <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.edit_event', event_id=event.id) }}">Editar</a>
+      <form method="post" action="{{ url_for('admin.delete_event', event_id=event.id) }}" onsubmit="return confirm('¿Seguro que deseas ocultar este evento?');" style="display:inline">
+        <button class="btn btn-danger btn-sm" type="submit">Ocultar</button>
+      </form>
+      <a class="btn btn-primary btn-sm" href="#inventory">Modificar stock</a>
+    </div>
+  </div>
+</div>
+
+<style>
+.admin-toolbar{border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,rgba(0,0,0,0.02),transparent);padding:12px 16px;margin-bottom:18px;border-radius:8px}
+.admin-toolbar-inner{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.admin-badge{background:rgba(0,255,230,0.06);color:var(--cyan);padding:6px 10px;border-radius:6px;font-weight:700;font-size:13px}
+.admin-msg{color:var(--text-muted);font-size:13px;margin-left:8px}
+.admin-toolbar-actions .btn{margin-left:8px}
+@media(max-width:720px){.admin-toolbar-inner{flex-direction:column;align-items:flex-start}}</style>
