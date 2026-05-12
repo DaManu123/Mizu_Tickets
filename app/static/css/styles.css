@@ -317,6 +317,58 @@ nav.navbar.scrolled { border-color: var(--border2); }
 .btn-lg { padding: 16px 36px; font-size: 1.05rem; border-radius: var(--radius-lg); }
 .btn-full { width: 100%; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+.btn-danger {
+  background: linear-gradient(135deg, rgba(255,45,120,0.95), rgba(123,47,255,0.72));
+  color: #fff;
+  box-shadow: 0 4px 24px rgba(255,45,120,0.18);
+}
+.btn-danger:hover { opacity: 0.92; box-shadow: var(--pink-glow); transform: translateY(-1px); }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.status-badge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+.status-badge.is-active {
+  color: var(--cyan);
+  background: var(--cyan-dim);
+  border-color: rgba(0,229,255,0.22);
+}
+.status-badge.is-inactive {
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.03);
+  border-color: rgba(255,255,255,0.08);
+}
+.status-badge.is-soldout {
+  color: var(--pink);
+  background: var(--pink-dim);
+  border-color: rgba(255,45,120,0.22);
+}
+
+.admin-toggle-form {
+  display: inline-flex;
+  margin: 0;
+}
+
+.admin-toggle-form .btn {
+  min-width: 118px;
+}
 
 /* ── PAGINA DE INICIO ── */
 

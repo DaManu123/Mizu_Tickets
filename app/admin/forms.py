@@ -61,3 +61,7 @@ class TicketStockForm(FlaskForm):
         validators=[InputRequired(), NumberRange(min=0)],
     )
     submit = SubmitField("Actualizar stock")
+
+
+class ToggleEventForm(FlaskForm):
+    submit = SubmitField("Confirmar")

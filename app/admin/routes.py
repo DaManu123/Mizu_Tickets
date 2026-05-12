@@ -7,7 +7,7 @@ from ..extensions import db
 from ..models.event import Event
 from ..models.ticket_type import TicketType
 from . import bp
-from .forms import EventCreateForm, EventEditForm, TicketStockForm
+from .forms import EventCreateForm, EventEditForm, TicketStockForm, ToggleEventForm
 
 
 def _require_admin():
@@ -92,18 +92,22 @@ def edit_event(event_id):
 @login_required
 def delete_event(event_id):
     _require_admin()
+    form = ToggleEventForm()
 
-    try:
-        event = Event.query.filter_by(id=event_id).first_or_404()
-        event.is_active = False
-        db.session.commit()
-        flash("Evento ocultado exitosamente", "success")
-    except SQLAlchemyError:
-        db.session.rollback()
-        flash("No se pudo ocultar el evento.", "error")
-    except Exception:
-        db.session.rollback()
-        flash("No se pudo ocultar el evento.", "error")
+    if form.validate_on_submit():
+        try:
+            event = Event.query.filter_by(id=event_id).first_or_404()
+            event.is_active = False
+            db.session.commit()
+            flash("Evento ocultado exitosamente", "success")
+        except SQLAlchemyError:
+            db.session.rollback()
+            flash("No se pudo ocultar el evento.", "error")
+        except Exception:
+            db.session.rollback()
+            flash("No se pudo ocultar el evento.", "error")
+    else:
+        flash("Solicitud invalida.", "error")
 
     return redirect(url_for("main.catalog"))
 
@@ -153,7 +157,39 @@ def dashboard():
             stock_total = sum([tt.stock_available for tt in ev.ticket_types]) if ev.ticket_types else 0
             events_data.append({'event': ev, 'stock_total': stock_total})
 
-        return render_template('admin/dashboard.html', events=events_data)
+        toggle_form = ToggleEventForm()
+        stock_form = TicketStockForm()
+        return render_template('admin/dashboard.html', events=events_data, toggle_form=toggle_form, stock_form=stock_form)
     except SQLAlchemyError:
         flash('No se pudo cargar el panel de administración.', 'error')
         return redirect(url_for('main.catalog'))
+
+
+
+@bp.route('/toggle-event/<int:event_id>', methods=['POST'])
+@login_required
+def toggle_event(event_id):
+    _require_admin()
+    form = ToggleEventForm()
+
+    try:
+        event = Event.query.get_or_404(event_id)
+    except SQLAlchemyError:
+        flash('No se pudo cargar el evento.', 'error')
+        return redirect(url_for('admin.dashboard'))
+
+    if form.validate_on_submit():
+        try:
+            event.is_active = not event.is_active
+            db.session.commit()
+            if event.is_active:
+                flash('Evento activado exitosamente', 'success')
+            else:
+                flash('Evento ocultado exitosamente', 'success')
+        except SQLAlchemyError:
+            db.session.rollback()
+            flash('No se pudo actualizar el estado del evento.', 'error')
+    else:
+        flash('Solicitud invalida.', 'error')
+
+    return redirect(url_for('admin.dashboard'))

@@ -119,7 +119,7 @@
           <div class="ticket-options">
             {% for ticket in event.ticket_types %}
             <form method="post" action="{{ url_for('admin.update_stock', ticket_type_id=ticket.id) }}" class="ticket-option" style="margin-bottom:16px">
-              {{ stock_form.hidden_tag() }}
+              {{ stock_form.csrf_token(id='stock-csrf-' ~ ticket.id) }}
               <span class="ticket-type-name">{{ ticket.name }}</span>
               <span class="ticket-type-desc">Actualiza el stock de este tipo de boleto.</span>
               <span class="ticket-type-footer" style="align-items:center;gap:12px;flex-wrap:wrap">

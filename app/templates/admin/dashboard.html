@@ -27,14 +27,30 @@
             <td>{{ row.event.date.strftime('%d/%m/%Y') }}</td>
             <td>{{ row.stock_total }}</td>
             <td>{{ row.event.ticket_types|length }}</td>
-            <td>{{ 'Activo' if row.event.is_active else 'Oculto' }}</td>
+            <td>
+              {% if row.event.is_active %}
+                <span class="status-badge is-active">Activo</span>
+              {% else %}
+                <span class="status-badge is-inactive">Oculto</span>
+              {% endif %}
+              {% if row.stock_total == 0 %}
+                <span class="status-badge is-soldout" style="margin-left:8px">Agotado</span>
+              {% endif %}
+            </td>
             <td>
               <a class="btn btn-ghost btn-sm" href="{{ url_for('main.event_detail', id=row.event.id) }}">Ver</a>
               <a class="btn btn-primary btn-sm" href="{{ url_for('admin.edit_event', event_id=row.event.id) }}">Editar</a>
               <form method="post" action="{{ url_for('admin.delete_event', event_id=row.event.id) }}" style="display:inline" onsubmit="return confirm('¿Ocultar evento?');">
+                {{ toggle_form.csrf_token(id='delete-csrf-' ~ row.event.id) }}
                 <button class="btn btn-danger btn-sm" type="submit">Ocultar</button>
               </form>
-              <button class="btn btn-outline btn-sm" data-event-id="{{ row.event.id }}" onclick="openStockModal({{ row.event.id }})">Editar stock</button>
+              <form class="admin-toggle-form" method="post" action="{{ url_for('admin.toggle_event', event_id=row.event.id) }}" onsubmit="return confirm('{{ '¿Activar evento oculto?' if not row.event.is_active else '¿Ocultar evento?' }}');">
+                {{ toggle_form.csrf_token(id='toggle-csrf-' ~ row.event.id) }}
+                <button class="btn btn-sm {{ 'btn-primary' if not row.event.is_active else 'btn-ghost' }}" type="submit">
+                  {{ 'Activar' if not row.event.is_active else 'Ocultar' }}
+                </button>
+              </form>
+              <button class="btn btn-ghost btn-sm" data-event-id="{{ row.event.id }}" onclick="openStockModal({{ row.event.id }})">Editar stock</button>
             </td>
           </tr>
           {% endfor %}
@@ -47,6 +63,7 @@
       <div class="modal-card" style="background:#0f0f12;padding:18px;border-radius:8px;max-width:520px;width:100%;">
         <h3>Editar stock</h3>
         <form id="stock-form" method="post">
+          {{ stock_form.hidden_tag() }}
           <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
             <input id="stock-value" name="stock" type="number" min="0" class="form-input" style="width:140px" required>
             <button class="btn btn-primary" type="submit">Guardar</button>
