@@ -1,3 +1,7 @@
+import base64
+from io import BytesIO
+
+import qrcode
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import SQLAlchemyError
@@ -64,8 +68,17 @@ def receipt(order_id):
         if current_user.id != order.user_id and current_user.role != "admin":
             from flask import abort
             abort(403)
-        
-        return render_template("orders/receipt.html", order=order)
+
+        qr = qrcode.QRCode(box_size=8, border=2)
+        qr.add_data(order.receipt_code)
+        qr.make(fit=True)
+
+        qr_image = qr.make_image(fill_color="black", back_color="white")
+        qr_buffer = BytesIO()
+        qr_image.save(qr_buffer, format="PNG")
+        qr_code_b64 = base64.b64encode(qr_buffer.getvalue()).decode("ascii")
+
+        return render_template("orders/receipt.html", order=order, qr_code_b64=qr_code_b64)
     except SQLAlchemyError:
         flash("No se pudo cargar el comprobante.", "error")
         return redirect(url_for("orders.history"))

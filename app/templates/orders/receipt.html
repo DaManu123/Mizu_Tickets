@@ -162,6 +162,46 @@
       font-weight: 700 !important;
       color: black !important;
     }
+    .receipt-qr {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 10pt !important;
+      margin: 12pt 0 !important;
+      padding: 10pt !important;
+      border: 1pt solid #000 !important;
+      page-break-inside: avoid;
+    }
+    .receipt-qr-card {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 6pt !important;
+      color: black !important;
+      text-align: center !important;
+    }
+    .receipt-qr-image {
+      width: 72pt !important;
+      height: 72pt !important;
+      display: block !important;
+      border: 1pt solid #000 !important;
+      background: white !important;
+      padding: 4pt !important;
+    }
+    .receipt-qr-label {
+      font-size: 9pt !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.8pt !important;
+      text-transform: uppercase !important;
+      color: black !important;
+    }
+    .receipt-qr-code {
+      font-family: 'Courier New', monospace !important;
+      font-size: 10pt !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.8pt !important;
+      color: black !important;
+    }
     .receipt-total {
       border-top: 2pt solid black !important;
       border-bottom: 1pt dashed black !important;
@@ -324,6 +364,51 @@
     font-weight: 700;
     color: #000;
   }
+
+  .receipt-qr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin: 18px 0;
+    padding: 16px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+  }
+
+  .receipt-qr-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    color: #000;
+  }
+
+  .receipt-qr-image {
+    width: 110px;
+    height: 110px;
+    display: block;
+    border: 1px solid #000;
+    background: #fff;
+    padding: 6px;
+  }
+
+  .receipt-qr-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #333;
+  }
+
+  .receipt-qr-code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #000;
+  }
   
   .receipt-total {
     border-top: 2px solid #000;
@@ -469,6 +554,15 @@
       <div class="receipt-total">
         <span class="receipt-total-label">TOTAL</span>
         <span class="receipt-total-value">${{ '%.2f'|format(order.total_amount) }}</span>
+      </div>
+
+      <!-- QR del comprobante -->
+      <div class="receipt-qr">
+        <div class="receipt-qr-card">
+          <img class="receipt-qr-image" src="data:image/png;base64,{{ qr_code_b64 }}" alt="Codigo QR del comprobante {{ order.receipt_code }}">
+          <div class="receipt-qr-label">Escanea tu comprobante</div>
+          <div class="receipt-qr-code">{{ order.receipt_code }}</div>
+        </div>
       </div>
 
       <!-- Footer -->
