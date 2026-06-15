@@ -1,4 +1,4 @@
-from flask import abort, flash, redirect, render_template, url_for, request
+from flask import abort, flash, jsonify, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
@@ -140,6 +140,37 @@ def update_stock(ticket_type_id):
         flash("Ingresa un stock valido.", "error")
 
     return redirect(request.referrer or url_for("main.event_detail", id=ticket_type.event_id))
+
+
+@bp.route("/api/event/<int:event_id>/ticket-types", methods=["GET"])
+@login_required
+def event_ticket_types(event_id):
+    _require_admin()
+
+    try:
+        event = Event.query.get_or_404(event_id)
+        ticket_types = (
+            TicketType.query.filter_by(event_id=event.id)
+            .order_by(TicketType.id.asc())
+            .all()
+        )
+
+        return jsonify(
+            {
+                "event_id": event.id,
+                "ticket_types": [
+                    {
+                        "id": ticket_type.id,
+                        "name": ticket_type.name,
+                        "price": format(ticket_type.price, ".2f"),
+                        "stock_available": ticket_type.stock_available,
+                    }
+                    for ticket_type in ticket_types
+                ],
+            }
+        )
+    except SQLAlchemyError:
+        return jsonify({"error": "No se pudo cargar los tipos de boleto."}), 500
 
 
 @bp.route('/dashboard')

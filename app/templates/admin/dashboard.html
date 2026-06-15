@@ -46,7 +46,7 @@
                   {{ 'Activar' if not row.event.is_active else 'Ocultar' }}
                 </button>
               </form>
-              <button class="btn btn-ghost btn-sm" data-event-id="{{ row.event.id }}" onclick="openStockModal({{ row.event.id }})">Editar stock</button>
+              <button class="btn btn-ghost btn-sm" type="button" data-event-id="{{ row.event.id }}" onclick="openStockModal({{ row.event.id }})">Modificar Stock</button>
             </td>
           </tr>
           {% endfor %}
@@ -60,10 +60,21 @@
         <h3>Editar stock</h3>
         <form id="stock-form" method="post">
           {{ stock_form.hidden_tag() }}
-          <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
-            <input id="stock-value" name="stock" type="number" min="0" class="form-input" style="width:140px" required>
-            <button class="btn btn-primary" type="submit">Guardar</button>
-            <button type="button" class="btn btn-ghost" onclick="closeStockModal()">Cancelar</button>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+            <div>
+              <label for="ticket-type-select" style="display:block;margin-bottom:6px;color:var(--text-muted)">Tipo de boleto</label>
+              <select id="ticket-type-select" class="form-input" required style="width:100%">
+                <option value="">Selecciona un tipo de boleto</option>
+              </select>
+            </div>
+            <div>
+              <label for="stock-value" style="display:block;margin-bottom:6px;color:var(--text-muted)">Stock disponible</label>
+              <input id="stock-value" name="stock" type="number" min="0" class="form-input" style="width:140px" required>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <button id="stock-submit" class="btn btn-primary" type="submit">Guardar</button>
+              <button type="button" class="btn btn-ghost" onclick="closeStockModal()">Cancelar</button>
+            </div>
           </div>
         </form>
       </div>
@@ -73,13 +84,69 @@
 </div>
 
 <script>
-function openStockModal(eventId){
-  const modal = document.getElementById('stock-modal');
-  const form = document.getElementById('stock-form');
-  form.action = '/admin/update-stock/'+eventId; // expects ticket_type id normally; dashboard will set ticket_type explicitly via UI later
-  modal.style.display='flex';
+const stockModal = document.getElementById('stock-modal');
+const stockForm = document.getElementById('stock-form');
+const stockInput = document.getElementById('stock-value');
+const ticketTypeSelect = document.getElementById('ticket-type-select');
+const stockSubmit = document.getElementById('stock-submit');
+
+function syncSelectedTicketType() {
+  const selectedOption = ticketTypeSelect.options[ticketTypeSelect.selectedIndex];
+
+  if (!selectedOption || !selectedOption.value) {
+    stockInput.value = '';
+    stockForm.action = '#';
+    return;
+  }
+
+  stockInput.value = selectedOption.dataset.stockAvailable || '0';
+  stockForm.action = '/admin/update-stock/' + selectedOption.value;
 }
-function closeStockModal(){document.getElementById('stock-modal').style.display='none'}
+
+ticketTypeSelect.addEventListener('change', syncSelectedTicketType);
+
+async function openStockModal(eventId){
+  try {
+    const response = await fetch('/admin/api/event/' + eventId + '/ticket-types');
+
+    if (!response.ok) {
+      throw new Error('No se pudieron cargar los tipos de boleto.');
+    }
+
+    const payload = await response.json();
+    const ticketTypes = Array.isArray(payload.ticket_types) ? payload.ticket_types : [];
+
+    ticketTypeSelect.innerHTML = '<option value="">Selecciona un tipo de boleto</option>';
+
+    ticketTypes.forEach(function(ticketType) {
+      const option = document.createElement('option');
+      option.value = ticketType.id;
+      option.textContent = ticketType.name + ' - $' + ticketType.price;
+      option.dataset.stockAvailable = ticketType.stock_available;
+      ticketTypeSelect.appendChild(option);
+    });
+
+    if (ticketTypes.length > 0) {
+      ticketTypeSelect.value = String(ticketTypes[0].id);
+      syncSelectedTicketType();
+      stockInput.disabled = false;
+      stockSubmit.disabled = false;
+    } else {
+      stockInput.value = '';
+      stockInput.disabled = true;
+      stockSubmit.disabled = true;
+      stockForm.action = '#';
+    }
+
+    stockModal.style.display = 'flex';
+  } catch (error) {
+    alert(error.message || 'No se pudieron cargar los tipos de boleto.');
+  }
+}
+
+function closeStockModal(){
+  stockModal.style.display='none';
+}
 </script>
 
 {% endblock %}
