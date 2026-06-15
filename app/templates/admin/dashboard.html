@@ -7,6 +7,9 @@
   <div class="container">
     <h1 style="margin-bottom:12px">Panel de Control</h1>
     <p style="color:var(--text-muted);margin-bottom:18px">Gestiona eventos y stock rápidamente.</p>
+    <div style="margin-bottom:18px;display:flex;justify-content:flex-start;flex-wrap:wrap;gap:12px">
+      <a class="btn btn-primary btn-sm" href="{{ url_for('admin.export_sales') }}">Descargar Reporte de Ventas (CSV)</a>
+    </div>
 
     <div class="table-responsive">
       <table class="admin-table" style="width:100%;border-collapse:collapse">

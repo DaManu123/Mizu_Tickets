@@ -1,10 +1,16 @@
-from flask import abort, flash, jsonify, redirect, render_template, url_for, request
+import csv
+import io
+from typing import Any, cast
+
+from flask import abort, flash, jsonify, redirect, render_template, url_for, request, Response
 from flask_login import current_user, login_required
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
 
 from ..extensions import db
 from ..models.event import Event
+from ..models.order import Order
+from ..models.order_item import OrderItem
 from ..models.ticket_type import TicketType
 from . import bp
 from .forms import EventCreateForm, EventEditForm, TicketStockForm, ToggleEventForm
@@ -140,6 +146,63 @@ def update_stock(ticket_type_id):
         flash("Ingresa un stock valido.", "error")
 
     return redirect(request.referrer or url_for("main.event_detail", id=ticket_type.event_id))
+
+
+@bp.route("/export-sales", methods=["GET"])
+@login_required
+def export_sales():
+    _require_admin()
+
+    try:
+        order_items = (
+            OrderItem.query.options(
+                joinedload(cast(Any, OrderItem.order)).joinedload(cast(Any, Order.user)),
+                joinedload(cast(Any, OrderItem.ticket_type)).joinedload(cast(Any, TicketType.event)),
+            )
+            .order_by(OrderItem.id.asc())
+            .all()
+        )
+
+        si = io.StringIO()
+        writer = csv.writer(si)
+        writer.writerow([
+            "ID Orden",
+            "Fecha",
+            "Cliente",
+            "Evento",
+            "Boleto",
+            "Cantidad",
+            "Precio Unitario",
+            "Subtotal",
+            "Codigo Recibo",
+        ])
+
+        for item in order_items:
+            order = item.order
+            ticket_type = item.ticket_type
+            event = ticket_type.event if ticket_type else None
+
+            writer.writerow([
+                order.id if order else "",
+                order.created_at.strftime("%d/%m/%Y %H:%M:%S") if order and order.created_at else "",
+                order.user.name if order and order.user else "",
+                event.title if event else "",
+                ticket_type.name if ticket_type else "",
+                item.quantity,
+                f"{item.unit_price:.2f}",
+                f"{item.subtotal:.2f}",
+                order.receipt_code if order else "",
+            ])
+
+        output = si.getvalue()
+        return Response(
+            output,
+            mimetype="text/csv",
+            headers={"Content-Disposition": "attachment; filename=reporte_ventas_mizu.csv"},
+        )
+    except SQLAlchemyError:
+        flash("No se pudo generar el reporte de ventas.", "error")
+        return redirect(url_for("admin.dashboard"))
 
 
 @bp.route("/api/event/<int:event_id>/ticket-types", methods=["GET"])
