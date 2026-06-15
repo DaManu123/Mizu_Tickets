@@ -36,7 +36,7 @@
         <p class="section-sub">Los shows mas esperados del ano, disponibles en Mizu Tickets.</p>
       </div>
 
-      <div class="search-section">
+      <div class="search-section" id="search-section">
         <form class="search-form" method="get" action="{{ url_for('main.catalog') }}">
           <label class="search-label" for="catalog-search">Buscar eventos</label>
           <div class="search-controls">
@@ -125,5 +125,15 @@
       {% endif %}
     </div>
   </section>
+
+  <script>
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('q')) {
+      const searchSection = document.getElementById('search-section');
+      if (searchSection) {
+        searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  </script>
 </div>
 {% endblock %}
