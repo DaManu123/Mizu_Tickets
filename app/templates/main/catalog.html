@@ -36,6 +36,30 @@
         <p class="section-sub">Los shows mas esperados del ano, disponibles en Mizu Tickets.</p>
       </div>
 
+      <div class="search-section">
+        <form class="search-form" method="get" action="{{ url_for('main.catalog') }}">
+          <label class="search-label" for="catalog-search">Buscar eventos</label>
+          <div class="search-controls">
+            <input
+              class="form-input search-input"
+              id="catalog-search"
+              type="text"
+              name="q"
+              value="{{ q }}"
+              placeholder="Busca por titulo o recinto"
+              autocomplete="off"
+            >
+            <button class="btn btn-primary search-button" type="submit">Buscar</button>
+            {% if q %}
+            <a class="btn btn-ghost search-button" href="{{ url_for('main.catalog') }}">Limpiar</a>
+            {% endif %}
+          </div>
+        </form>
+        {% if q %}
+        <p class="search-summary">Resultados para <strong>{{ q }}</strong></p>
+        {% endif %}
+      </div>
+
       {% if events %}
       <div class="concerts-grid large">
         {% for event in events %}
@@ -83,8 +107,20 @@
       {% else %}
       <div class="no-results">
         <div class="no-results-icon">🎵</div>
-        <div class="no-results-title">No hay eventos disponibles</div>
-        <p>Vuelve pronto para ver los siguientes conciertos.</p>
+        <div class="no-results-title">
+          {% if q %}
+          No encontramos eventos para tu búsqueda
+          {% else %}
+          No hay eventos disponibles
+          {% endif %}
+        </div>
+        <p>
+          {% if q %}
+          Prueba con otro titulo o recinto.
+          {% else %}
+          Vuelve pronto para ver los siguientes conciertos.
+          {% endif %}
+        </p>
       </div>
       {% endif %}
     </div>

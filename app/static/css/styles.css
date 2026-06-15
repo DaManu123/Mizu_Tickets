@@ -266,6 +266,66 @@ nav.navbar.scrolled { border-color: var(--border2); }
   letter-spacing: 0.15em; text-transform: uppercase;
   color: var(--cyan);
   background: var(--cyan-dim);
+
+.search-section {
+  margin: 28px auto 36px;
+  max-width: 860px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search-label {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.search-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.search-button {
+  white-space: nowrap;
+}
+
+.search-summary {
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 720px) {
+  .search-section {
+    padding: 16px;
+    margin: 22px auto 30px;
+  }
+
+  .search-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-button {
+    width: 100%;
+  }
+}
   border: 1px solid rgba(0,229,255,0.25);
   padding: 4px 14px; border-radius: 99px;
   margin-bottom: 12px;
